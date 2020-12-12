@@ -1,0 +1,97 @@
+import express from 'express';
+import path from 'path';
+import session from 'express-session';
+import devMiddleware from 'webpack-dev-middleware';
+import hotMiddleware from 'webpack-hot-middleware';
+import bodyParser from 'body-parser';
+import flash from 'connect-flash';
+import config from './config/webpack.dev';
+
+import menuRoutes from './routes/menu';
+
+const isProd = process.env.NODE_ENV === 'production';
+let webpackDevMiddleware;
+let webpackHotMiddleware;
+
+const webpack = require('webpack');
+if (!isProd) {
+	const compiler = webpack(config);
+	webpackDevMiddleware = devMiddleware(compiler, {
+		writeToDisk: filePath => {
+			// instruct the dev server to the home.html file to disk
+			// so that the route handler will be able to read it
+			return /.+\.css$/.test(filePath);
+		},
+	});
+	webpackHotMiddleware = hotMiddleware(compiler);
+}
+
+/**
+ *
+ *  global app variables
+ *
+ * */
+const app = express();
+
+/**
+ * data middleware
+ */
+const dataMW = (function (app) {
+	app.use(
+		bodyParser.urlencoded({
+			extended: false,
+		})
+	);
+	app.use(bodyParser.json());
+})(app);
+
+/**
+ *
+ * Session middleware
+ *
+ */
+
+/**
+ * Webpack middleware
+ */
+if (!isProd) {
+	const webpackMW = (function (app) {
+		app.use(webpackDevMiddleware);
+		app.use(webpackHotMiddleware);
+	})(app);
+}
+
+/**
+ *
+ * General Middleware
+ *
+ */
+
+const generalMW = (function (app) {
+	app.set('view engine', 'pug');
+	app.set('views', path.join(__dirname, './views'));
+
+	app.use(express.static(path.join(__dirname, '../dist')));
+	app.use(express.static(path.join(__dirname, '../fonts')));
+})(app);
+
+/**
+ * flash Middleware
+ *
+ */
+const flasHMW = (app => {
+	app.use(flash());
+})(app);
+
+app.use((req, res, next) => {
+	console.log('request received');
+	next();
+});
+app.use('/', menuRoutes);
+
+const connect = (async function (app) {
+	const PORT = 8080;
+	app.listen(PORT, () => {
+		console.log(`app is listening on port http://localhost:${PORT}`);
+	});
+})(app);

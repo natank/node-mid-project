@@ -1,0 +1,23 @@
+extends ../templates/container.pug
+block content
+  h1.text-center.my-4
+    | DIY PRINTABLES FOR HOLIDAYS & PARTIES
+
+  - const createUrl = `/admin/createCategory/`
+  - const formAction = `/admin/categoty`;
+
+  //- include ../includes/adminPanel
+
+  .adminPanel.adminPanel--category
+    a.btn.adminPanel__new-category.mx-auto(href='/admin/createCategory', role='button') 
+      | Create Category
+  form.w-25.mx-auto
+  .categories.my-5
+    input(type="hidden" name="_csrf" value=csrfToken)
+    each category in allCategories
+      - let {title} = category;
+      - let editUrl = `/admin/editCategory/${category._id}`;
+      - let deleteUrl = `/admin/deleteCategory/${category._id}`;
+      - let itemType = 'category';
+      include ../includes/productCard
+

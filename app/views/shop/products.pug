@@ -1,0 +1,30 @@
+extends ../templates/container.pug
+block content
+  h1.text-center.my-4
+    | DIY PRINTABLES FOR HOLIDAYS & PARTIES
+
+  h2.text-center.mb-4.text-uppercase #{title}
+  if(acquisition)
+    form(action=route method='GET').mb-5
+      div.form-group.w-50.m-auto
+        select(name="acquisition").form-control#opt.w-70.w-md-50.submit-on-toggle.m-auto
+          - let selected = false;
+          - selected = acquisition === 'free' 
+          option(value='free' selected= selected) Free
+          - selected = acquisition === 'premium' 
+          option(value='premium' selected= selected) Premium
+          - selected = acquisition === 'all' 
+          option(value='all' selected= selected) All
+
+  .products
+    each product in products
+      - let displayMode = 'gallery';
+      - let itemType = 'product'; 
+      - let downloadUrl = `/download/${product._id}`;
+      - let { id, editUrl, deleteUrl, imageUrl, title, description, myProduct, price } = product;
+      - const productUrl = `/product/${product.id}`
+
+      include ../includes/productCard
+  include ../includes/footer.pug 
+
+

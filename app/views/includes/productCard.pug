@@ -1,0 +1,47 @@
+.card.card--product(class= `card--${itemType}` style='width: 100%' data-id=id data-csrf=csrfToken).position-relative.bg-secondary
+  if(['product', 'topic'].includes(itemType))
+    picture.p-0.m-0.mb-3
+      img(src= imageUrl alt=title style='width: 100%; height: 10rem; object-fit: contain').card-img-top
+  if(itemType === 'product')  
+    include heart.pug
+    include heart-fill.pug
+    .alert.alert-success.speech-bubble.speech-bubble--product.invisible.position-absolute
+      strong Login
+      |  to create your wishlist
+
+  .card-body.d-relative
+    h5.card-title.text-center.bg-transparent #{title}
+    if(['product', 'topic'].includes(itemType))
+      if( diplayMode === 'gallery')
+        p.card-text.card__description.line-clamp.line-clamp--2.bg-success.text-light
+          | #{description}
+      else
+        p.text-light.card__description.line-clamp.line-clamp--2
+          | #{description} 
+
+    if(itemType === 'product')
+      //- display price only if 
+      //-   Not my product or 
+      //-   Free product or
+      //-   Admin user
+      - let priceVisibility = (userType === 'admin' || (!myProduct || price === 0)  ) ? 'visible' : 'hidden'
+      //- Display 'FREE' for free product
+      - let uiPrice = price === 0 ? 'FREE' : `$${price}`
+      h3(style={visibility: priceVisibility}).text-center.card--product__price.text-primary #{uiPrice}
+
+
+    .card--product__actions
+      if(itemType === 'product')
+        //- Display Learn More in shop and gallery mode. 
+        if(displayMode === 'gallery')
+          a.btn.btn-success(href=productUrl).d-block.w-70.mr-auto.ml-auto.border.border-dark.text-uppercase.mb-2 Learn More
+        //- Download only purchased and free products. Admin may download any product
+        if(myProduct || price === 0)
+          a(href= downloadUrl).btn.btn--action.d-block.w-70.ml-auto.mr-auto.border-dark DOWNLOAD
+        else
+          div.w-70.ml-auto.mr-auto.border.border-dark.rounded.btn--action
+            include ../includes/add-to-cart.pug
+      if(section === 'admin' && userType === 'admin')
+        a(href= editUrl).btn.btn--action.d-block.w-70.ml-auto.mr-auto.border-dark   Edit
+        a(href= deleteUrl).btn.btn--action.d-block.w-70.ml-auto.mr-auto.border-dark Delete
+

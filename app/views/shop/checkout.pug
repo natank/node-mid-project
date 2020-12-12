@@ -1,0 +1,15 @@
+extends ../templates/container.pug
+block content
+
+	h1.text-center.my-4
+		| Checkout
+	main
+		ul.cart__item-list
+			each item in cart
+				li.cart__item
+					h1 #{item.product.title}
+					h2 Quantity: #{item.quantity}
+
+		div.text-center
+			h2.text-center Total: #{totalSum}
+			button.btn.btn-success(type="button" onclick=`createOrder('${checkoutSessionId}')`) Order Now!

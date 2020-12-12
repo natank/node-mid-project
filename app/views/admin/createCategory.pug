@@ -1,0 +1,19 @@
+extends ../templates/container.pug
+block content
+  - const title = isEdit ? category.title : null
+  - const id = isEdit ? category._id : null
+  - const action = isEdit ? "/admin/editCategory" : "/admin/createCategory"
+  h2.text-center.my-4
+    | #{isEdit ? "Edit Category" : "Add Category"}
+
+  form(action=action method='POST').border.border-info.w-75.align-self-center.p-4
+    input(type="hidden" name="_csrf" value=csrfToken)
+    input(type="hidden", name="id", value= id)
+    div.form-group
+      label(for='title') 
+        | Title: 
+      input(type='text', name='title', required, value = title).form-control
+    div.form-group
+      label(for="description") Category Description
+      textarea(name='description', placeholder="Category Description", required).form-control
+    button(class='btn btn-info' type='submit', value='Submit') SUBMIT

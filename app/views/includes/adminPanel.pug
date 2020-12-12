@@ -1,0 +1,15 @@
+.adminPanel
+  if(filterBy)
+    form.adminPanel__form.mx-auto(action= formAction)
+      input(type="hidden" name="_csrf" value=csrfToken)
+      div.form-group
+        label(for="items") Filter by #{filterBy}
+        select(name="filter" id="items").form-control 
+          option(name="all" value="all", selected) ALL #{filterGroup}
+          each item in items
+            - const selected = item.id === filter
+            option(value=item.id selected=selected) #{item.title.toUpperCase()}
+
+        input(type="submit", value="Submit").btn
+  a.btn.adminPanel__new-topic(href=createUrl, role='button') 
+    | New #{itemType}

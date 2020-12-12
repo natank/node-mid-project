@@ -1,0 +1,16 @@
+extends ../templates/container.pug
+block content
+  h1.text-center.my-4
+    | ADMIN DASHBOARD
+  .container
+    .dashboard__options.list-group.w-100.mx-auto.text-center
+      a.list-group-item.list-group-item-action(href='/admin/categories')
+        | Manage Categories
+      a.list-group-item.list-group-item-action(href='/admin/topics')
+        | Mange Topics
+      a.list-group-item.list-group-item-action(href='/admin/products')
+        | Manage Products
+
+
+  include ../includes/footer.pug 
+

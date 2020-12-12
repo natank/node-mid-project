@@ -1,0 +1,66 @@
+nav.navbar.navbar--primary.navbar-expand-lg.navbar-light
+  a.navbar-brand(href='/') 
+    h2.navbar-brand__main Eduactivity
+    h2.navbar-brand__secondary.text-success Printables
+  button.navbar-toggler(type='button' data-toggle='collapse' data-target='#navbarSupportedContent' aria-controls='navbarSupportedContent' aria-expanded='false' aria-label='Toggle navigation')
+    span.navbar-toggler-icon
+  .collapse.navbar-collapse#navbarSupportedContent
+    ul.navbar-nav.mr-auto
+      - let isActive = 'not-active'
+      if(isLoggedIn)
+        - isActive = page==='cart' ? 'active' : 'not-active'
+      li
+        a.nav-link(href='/')
+          span.glyphicon.glyphicon-home
+          span.sr-only (current)
+      li(class=isActive)
+        a.nav-link(href='/cart')
+          span.glyphicon.glyphicon-shopping-cart
+          span.sr-only (current)
+      if(isAdmin)
+        - isActive = section==='admin' ? 'active' : 'not-active'
+      li
+        a.nav-link(class=isActive, href='/admin/') Admin
+    form.form-inline.my-2.my-lg-0.mr-0.mx-lg-4.search--tooltip
+      input.search__input.form-control.pl-15-at-small.mr-sm-2(type='search' placeholder='Search' aria-label='Search').border-danger
+      button.btn.btn-outline-secondary.my-2.my-sm-0.disabled(type='button') Search
+      span.tooltiptext Searching products isn't active yet. Browse for products by Category
+
+
+    ul.navbar-nav.navbar-right
+      if !isLoggedIn
+        li.mx-lg-2.nav-item
+          a(href='/auth/signup').nav-link.text-secondary
+            span.glyphicon.glyphicon-user
+            |  Sign Up
+        li.nav-item
+          a(href='/auth/login').nav-link.text-secondary
+            span.glyphicon.glyphicon-log-in
+            |  Login
+      else
+        li.nav-item.position-relative.wishlist
+          if(wishlist.length)
+            a(href='#').nav-link.text-secondary
+              svg.bi.bi-heart-fill(width='25', height='25', viewbox='0 0 20 20', fill='currentColor',  xmlns='http://www.w3.org/2000/svg')
+                path(fill-rule='evenodd', d='M10 3.314C14.438-1.248 25.534 6.735 10 17-5.534 6.736 5.562-1.248 10 3.314z', clip-rule='evenodd')
+            ul.wishlist__list.position-absolute
+              each product in wishlist
+                li.wishlist__item
+                  - const productPath = `/product/${product.id}`
+                  a(href=productPath)
+                    img(src= product.imageUrl)
+                    p #{product.title}
+
+        li.nav-item.dropdown.greeting
+          a(href='#' role='button' data-toggle="dropdown" aria-haspopup="true" aria-expanded="false").nav-link#navbarDropdown.text-secondary
+            | Hello #{user}
+          div.dropdown-menu(aria-labelledby="navbarDropdown")
+            a.dropdown-item(href="/my-products")
+              | My Products
+            a.dropdown-item(href="/orders")
+              | My Orders
+            a.dropdown-item(href='/auth/logout')
+              span.glyphicon.glyphicon-log-out
+              span.mx-1 Logout
+
+

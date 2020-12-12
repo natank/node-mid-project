@@ -1,0 +1,19 @@
+extends ../templates/container.pug
+block content
+  include ../includes/header.pug 
+  h1.text-center.my-4
+    | Orders
+  main
+    if orders.length <= 0
+      h1 Nothing there!
+    else
+      ul.orders
+        each order in orders
+          li.orders__item
+            h1 Order - # #{order._id} - 
+              - const orderPath = `/orders/${order._id}`
+              a(href=orderPath) Invoice
+            ul.orders__products
+              each product in order.prods
+                li.orders__products-item #{product.title} #{product.quantity} 
+                  a(href=`/download/${product._id}`) DOWNLOAD

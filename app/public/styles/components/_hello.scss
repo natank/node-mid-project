@@ -1,0 +1,15 @@
+.hello {
+      display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px,1fr));
+        justify-content: center;
+        justify-items: center;
+      &__image {
+        background: url('../../images/image1050.png');
+        background-repeat: no-repeat;
+        background-position: center;
+        height: auto;
+        width: 40%;
+        min-width: 140px;
+      }
+    
+    }

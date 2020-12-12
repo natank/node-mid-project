@@ -1,0 +1,96 @@
+extends ../templates/container.pug
+block content
+  if(errorMessage)
+      div.alert.alert-danger.mt-3.text-center #{errorMessage}
+  else
+    - const isEdit = (renderAs === 'edit')
+    - const isNew = (renderAs === 'new')
+    - const isErrors = (renderAs === 'errors')
+    - const prodId =  isEdit ? product._id : null
+    - const title =   isEdit || isErrors ? product.title: ''
+    - const description = isEdit || isErrors? product.description : ''
+    - const price = isEdit || isErrors ? product.price : ''
+    - const topicName = isEdit || isErrors ? product.topic : ''
+    - const action = isEdit ? "/admin/editProduct" : "/admin/createProduct"
+    - const isRequired = false
+    - let validityClass = null
+    - let errorMessage = null
+      h2.text-center.my-4
+        | #{isEdit ? "Edit Product" : "Add Product"}
+      form(action= action method='POST' enctype="multipart/form-data").admin-form.border.border-info.align-self-center.p-4.m-auto
+        input(type="hidden" name="_csrf" value=csrfToken)
+        - if(isEdit)
+          input(type="hidden", id="id", name= "prodId", value= prodId)
+        div.form-group
+          label(for='title') 
+            | Title: 
+          - let titleError = validationErrors && validationErrors['title']
+          if(titleError) 
+            - validityClass = "is-invalid"
+          input(type='text', name='title', value= title class=validityClass).form-control
+          if(titleError)
+            small(class="text-danger") #{titleError}
+        div.form-group
+          - validityClass = null
+          label(for='printable') 
+            | Printable File: 
+          - let pdfNameError = validationErrors && validationErrors['printableName'] 
+          - let pdfMissingError = validationErrors && validationErrors['printableUrl']
+          - let pdfSizeError = validationErrors && validationErrors['printableSize']
+          if(pdfMissingError || pdfNameError || pdfSizeError)
+            - validityClass = 'is-invalid'
+          input(type='file', name='printable', accept=".pdf" required=isRequired class=validityClass).form-control-file
+          if(pdfError)
+            small(class="text-secondary") #{pdfMissingError}
+          if(pdfNameError)
+            small(class="text-secondary") #{pdfNameError}
+          if(pdfSizeError)
+            small(class="text-secondary") #{pdfSizeError}
+        div.form-group
+          - validityClass = null
+          label(for='imageurl') 
+            | Image: 
+          - let imageMissingError = validationErrors && validationErrors['imageUrl']
+          - let imageNameError = validationErrors && validationErrors['imageName']
+          - let imageSizeError = validationErrors && validationErrors['imageSize']
+          if(imageMissingError || imageNameError || imageSizeError)
+            - validityClass = 'is-invalid'
+          input(type='file', name='imageurl' accept="image/*" required=isRequired).form-control-file
+          if(imageMissingError)
+            small(class="text-secondary") #{imageError}
+          if(imageNameError)
+            small(class="text-secondary") #{imageNameError}
+          if(imageSizeError)
+            small(class="text-secondary") #{imageSizeError}
+
+        div.form-group
+        - validityClass = null
+          label(for='price')| Price 
+          - let priceError = validationErrors && validationErrors['price']
+          if(priceError)
+            - validityClass = 'is-invalid'
+          input(type='text', name='price', value=price class=validityClass).form-control
+          if(priceError)
+            small(class="text-danger") #{priceError}
+        div.form-group
+        - validityClass = null
+          label(for='topics')| Select Topics
+          - let topicError = validationErrors && validationErrors['topic']
+          select(name="topic" multiple).form-control
+            each topic in topics
+              - let isSelected = false
+              - if(isEdit  && product && product.topic && (product.topic.id === topic.id)) isSelected = true
+              - if(isErrors && product && product.topic && (product.topic === topic.id)) isSelected = true
+              option(value= topic.id selected= isSelected).text-uppercase  #{topic.title}
+          if(topicError)
+            small(class="text-danger") #{topicError}
+        div.form-group
+        - validityClass = null
+          label(for="description") Product Description
+          - let descriptionError = validationErrors && validationErrors['description']
+          if(descriptionError)
+            - validityClass = 'is-invalid'
+          textarea(name='description', placeholder="Product Description" class=validityClass).form-control #{description}
+          if(descriptionError)
+            small(class="text-danger") #{descriptionError}
+        button(class='btn btn-info' type='submit', value='Submit').d-block.mx-auto.mt-3 SUBMIT

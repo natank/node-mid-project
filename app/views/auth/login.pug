@@ -1,0 +1,19 @@
+extends ../templates/container.pug
+block content
+  main.d-flex.flex-column.align-items-center.flex-grow-1
+    if(errorMessage.length > 0)
+      div.alert.alert-danger.mt-3 #{errorMessage}
+    form.auth__form(action="/auth/login" method="POST").d-flex.flex-column.justify-content-center.flex-grow-1
+      input(type="hidden" name="_csrf" value=csrfToken)
+      div.form-group
+        label(for="email") E-Mail
+        input.form-control(class=validationErrors.find(e=>e.param==='email') ? 'invalid':'' type="text" name="email" id="email" value= oldInput.email)
+
+      div.form-group
+        label(for="password") Password
+        input.form-control(class= (validationErrors.find(e=>e.param==='password') ? 'invalid':'') type="password" name="password" value=oldInput.password)
+
+      button.btn.btn-primary(type="submit") Login
+
+      div.centered
+        a(href="/reset") Reset Password

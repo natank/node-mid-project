@@ -1,0 +1,24 @@
+extends ../templates/container.pug
+block content
+  h1.text-center.my-4
+    | DIY PRINTABLES FOR HOLIDAYS & PARTIES
+
+  h2.text-center.mb-4.text-uppercase  
+    | #{category.title}
+  div.category__topics
+    for topic in topics
+      - const title = topic.title
+      - const description = topic.description
+      - const imgUrl = topic.imageUrl
+
+      .card.topic
+        img(src=imgUrl, alt=title, style='width: 100%; height: 16rem; object-fit: contain').card-img-top.mb-3
+        h5.card-title.text-center.text-uppercase= title
+        .card-body.text-center.text-light
+          p.card-text.
+            | #{description}
+          -const exploreProducts = `/topic/${topic._id}`
+          a.btn.btn-success(href= exploreProducts) Explore Products
+
+  include ../includes/footer.pug 
+
