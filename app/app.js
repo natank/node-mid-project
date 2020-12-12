@@ -8,6 +8,7 @@ import flash from 'connect-flash';
 import config from './config/webpack.dev';
 
 import menuRoutes from './routes/menu';
+import authRouter from './routes/auth';
 
 const isProd = process.env.NODE_ENV === 'production';
 let webpackDevMiddleware;
@@ -83,11 +84,20 @@ const flasHMW = (app => {
 	app.use(flash());
 })(app);
 
-app.use((req, res, next) => {
-	console.log('request received');
-	next();
-});
 app.use('/', menuRoutes);
+app.use('/auth', authRouter);
+app.use(function notFound(req, res) {
+	res.render('error', { message: "That page doesn't exist" });
+});
+
+app.use(function errorHandler(err, req, res, next) {
+	console.log(err);
+	if (res.headersSent) {
+		return next(err);
+	}
+	res.status(500);
+	res.render('error', { message: 'Something went wrong' });
+});
 
 const connect = (async function (app) {
 	const PORT = 8080;
