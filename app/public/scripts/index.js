@@ -1,4 +1,5 @@
-const axios = require('axios');
+import axios from 'axios';
+
 document.addEventListener('DOMContentLoaded', (event) => {
   let select = document.querySelector(".submit-on-toggle");
   select && select.addEventListener('change', (event) => {

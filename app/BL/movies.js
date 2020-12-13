@@ -1,14 +1,17 @@
 
-import Movie from ('../models/Movie');
+import Movie from '../models/Movie';
 
 export async function getMovies(req, res, next) {
+  
+  console.log('get movies error')
+  res.end()
 	try {
 		const movies = await Movie.find({}, 'title');
 		res.render('./movies', {
 			allMovies: movies,
 		});
 	} catch (err) {
-		next(err);
+    next(err);
 	}
 };
 
@@ -24,7 +27,7 @@ export async function getMovie(req, res, next) {
 
 
 
-export async function postSearchMovies(req, res, next) => {
+export async function postSearchMovies(req, res, next)  {
 	const prodId = req.body.productId;
 	let user = await req.user
 		.populate({
@@ -47,8 +50,9 @@ export async function postSearchMovies(req, res, next) => {
 };
 
 export async function getCreateMovie(req, res, next) {
+  console.log("getcreatemovie")
   try {
-    res.render('createMovie', {
+    res.render('movieForm', {
       renderAs: 'new',
     });
   } catch (err) {
@@ -56,7 +60,7 @@ export async function getCreateMovie(req, res, next) {
   }
 };
 
-export async function postCreate(req, res, next) {
+export async function postCreateMovie(req, res, next) {
   const errors = validationResult(req);
   const { title, price, description, imageUrl, printableUrl, topic } = req.body;
   if (errors.isEmpty()) {

@@ -9,6 +9,9 @@ import config from './config/webpack.dev';
 
 import menuRoutes from './routes/menu';
 import authRouter from './routes/auth';
+import userRouter from './routes/user'
+
+import * as moviesController from './BL/movies';
 
 const isProd = process.env.NODE_ENV === 'production';
 let webpackDevMiddleware;
@@ -84,7 +87,19 @@ const flasHMW = (app => {
 	app.use(flash());
 })(app);
 
+/**Menu Routes */
 app.use('/', menuRoutes);
+
+/**Movies Routes */
+app.get('/search', moviesController.getMovies )
+app.post('/search', moviesController.postSearchMovies);
+app.get('/create', moviesController.getCreateMovie )
+app.post('/create', moviesController.postCreateMovie);
+
+/**User Routes */
+app.get('/users', userRouter)
+
+/**Auth Routes */
 app.use('/auth', authRouter);
 app.use(function notFound(req, res) {
 	res.render('error', { message: "That page doesn't exist" });

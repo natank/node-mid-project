@@ -1,0 +1,15 @@
+extends ./templates/container.pug
+block content
+  section.hero
+      p.hero__text 
+        | Create Movie
+  section.container
+    form.row.g-3(action="/movies/create")
+      .col-12
+        label(for="name", class="form-label") Name
+        input(type="text").form-control#name
+      .col-12
+        button(type="submit").btn.btn-secondary Create
+
+
+  include ./includes/footer.pug
