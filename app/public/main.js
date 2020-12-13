@@ -1,4 +1,2 @@
-
-require("./styles/main.scss");
-require("./scripts/index");
-require("./scripts/stripe");
+require('./styles/main.scss');
+require('./scripts/index');
