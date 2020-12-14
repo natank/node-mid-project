@@ -1,14 +1,13 @@
 
-import Movie from '../models/Movie';
+import * as Movie from '../models/Movie';
 
 export async function getMovies(req, res, next) {
   
-  console.log('get movies error')
-  res.end()
+  
 	try {
-		const movies = await Movie.find({}, 'title');
+		const movies = await Movie.find({});
 		res.render('./movies', {
-			allMovies: movies,
+			movies,
 		});
 	} catch (err) {
     next(err);
@@ -50,7 +49,6 @@ export async function postSearchMovies(req, res, next)  {
 };
 
 export async function getCreateMovie(req, res, next) {
-  console.log("getcreatemovie")
   try {
     res.render('movieForm', {
       renderAs: 'new',
@@ -61,46 +59,15 @@ export async function getCreateMovie(req, res, next) {
 };
 
 export async function postCreateMovie(req, res, next) {
-  const errors = validationResult(req);
-  const { title, price, description, imageUrl, printableUrl, topic } = req.body;
-  if (errors.isEmpty()) {
-    await createTheProduct();
-  } else {
-    showErrors();
-  }
-  async function createTheProduct() {
-    try {
-      let product = await Product.create({
-        title: title,
-        price: price,
-        description: description,
-        imageUrl: imageUrl,
-        printableUrl: printableUrl,
-        topic: topic,
-        createdBy: req.user._id
-      });
-      res.redirect('/admin/products');
-    } catch (err) {
-      next(err);
-    }
-  }
+  const { name, language, genre } = req.body;
+  try{
 
-  async function showErrors() {
-    let topics = await Topic.find({}, 'title');
-    const validationErrors = errors.array().reduce((errorObj, error) => {
-      let { param } = error;
-      // if field contains more than one validation error - show only the first
-      if (!errorObj[param]) errorObj[param] = error.msg;
-      return errorObj;
-    }, {});
-    res.status(422).render('admin/createProduct', {
-      renderAs: 'errors',
-      topics: topics,
-      product: { title, price, description, topic },
-      validationErrors,
-      page: 'admin'
-    });
+    await Movie.createMovie({name, language, genre})
+    res.render('./menu')
+  } catch(err){
+    next(err)
   }
+  
 };
 
 
