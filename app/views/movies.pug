@@ -1,30 +1,31 @@
 extends ./templates/container.pug
 block content
   h1.text-center.my-4
-    | DIY PRINTABLES FOR HOLIDAYS & PARTIES
+    | Movies
 
-  h2.text-center.mb-4.text-uppercase #{title}
-  if(acquisition)
-    form(action=route method='GET').mb-5
-      div.form-group.w-50.m-auto
-        select(name="acquisition").form-control#opt.w-70.w-md-50.submit-on-toggle.m-auto
-          - let selected = false;
-          - selected = acquisition === 'free' 
-          option(value='free' selected= selected) Free
-          - selected = acquisition === 'premium' 
-          option(value='premium' selected= selected) Premium
-          - selected = acquisition === 'all' 
-          option(value='all' selected= selected) All
+  form.row.g-3(action="/search")
+    .col-3
+      label(for="name", class="form-label") Name
+      input(type="text" name="name").form-control#name
+    .col-3
+      label(for="language", class="form-label") Language
+      input(type="text" name="language").form-control#language
+    .col-3
+      label(for='genres', class="form-label") Genres
+      select(name="genre").custom-select#genres.form-control
+        option(selected disabled hidden value="") Choose genre...
+        option(value="Drame") Drama
+        option(value="Comedy") Comedy
+        option(value="3") 3
+        option(value="4") 4
+        option(value="5") 5
+    .col-12
+      button(type="submit").btn.btn-secondary Submit
 
-  .products
-    each product in products
-      - let displayMode = 'gallery';
-      - let itemType = 'product'; 
-      - let downloadUrl = `/download/${product._id}`;
-      - let { id, editUrl, deleteUrl, imageUrl, title, description, myProduct, price } = product;
-      - const productUrl = `/product/${product.id}`
-
-      include ../includes/productCard
-  include ../includes/footer.pug 
+  ul
+    each movie in movies 
+      li= movie.name
+        
+  include ./includes/footer.pug 
 
 

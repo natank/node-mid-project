@@ -1,32 +1,28 @@
-
 import * as Movie from '../models/Movie';
 
 export async function getMovies(req, res, next) {
-  
-  
+	var { name, language, genre } = req.query;
 	try {
-		const movies = await Movie.find({});
+		const movies = await Movie.find({ name, language, genre });
 		res.render('./movies', {
 			movies,
 		});
 	} catch (err) {
-    next(err);
+		next(err);
 	}
-};
+}
 
 export async function getMovie(req, res, next) {
 	try {
 		const movie = await Movie.findById(req.params.id);
 
-		res.render('./movie', {	movie	});
+		res.render('./movie', { movie });
 	} catch (err) {
 		next(err);
 	}
-};
+}
 
-
-
-export async function postSearchMovies(req, res, next)  {
+export async function postSearchMovies(req, res, next) {
 	const prodId = req.body.productId;
 	let user = await req.user
 		.populate({
@@ -46,28 +42,24 @@ export async function postSearchMovies(req, res, next)  {
 		error.httpStatusCode = 500;
 		return next(error);
 	}
-};
+}
 
 export async function getCreateMovie(req, res, next) {
-  try {
-    res.render('movieForm', {
-      renderAs: 'new',
-    });
-  } catch (err) {
-    next(err);
-  }
-};
+	try {
+		res.render('movieForm', {
+			renderAs: 'new',
+		});
+	} catch (err) {
+		next(err);
+	}
+}
 
 export async function postCreateMovie(req, res, next) {
-  const { name, language, genre } = req.body;
-  try{
-
-    await Movie.createMovie({name, language, genre})
-    res.render('./menu')
-  } catch(err){
-    next(err)
-  }
-  
-};
-
-
+	const { name, language, genre } = req.body;
+	try {
+		await Movie.createMovie({ name, language, genre });
+		res.render('./menu');
+	} catch (err) {
+		next(err);
+	}
+}

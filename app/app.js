@@ -9,7 +9,7 @@ import config from './config/webpack.dev';
 
 import menuRoutes from './routes/menu';
 import authRouter from './routes/auth';
-import userRouter from './routes/user'
+import userRouter from './routes/user';
 
 import * as moviesController from './BL/movies';
 
@@ -91,13 +91,12 @@ const flasHMW = (app => {
 app.use('/', menuRoutes);
 
 /**Movies Routes */
-app.get('/search', moviesController.getMovies )
-app.post('/search', moviesController.postSearchMovies);
-app.get('/create', moviesController.getCreateMovie )
+app.get('/search', moviesController.getMovies);
+app.get('/create', moviesController.getCreateMovie);
 app.post('/create', moviesController.postCreateMovie);
 
 /**User Routes */
-app.get('/users', userRouter)
+app.get('/users', userRouter);
 
 /**Auth Routes */
 app.use('/auth', authRouter);
