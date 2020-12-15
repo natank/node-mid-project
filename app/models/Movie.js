@@ -4,7 +4,7 @@ import path from 'path';
 var fileName = 'NewMovies.json';
 
 export async function createMovie(settings) {
-	var { name, language, genre } = settings;
+	var { name, language, genres } = settings;
 
 	fs.readFile(fileName, function (err, data) {
 		var movies;
@@ -15,7 +15,7 @@ export async function createMovie(settings) {
 			movies = JSON.parse(data);
 		}
 		var id = movies.length;
-		var movie = { name, language, genre, id };
+		var movie = { name, language, genres, id };
 		movies.movies.push(movie);
 		fs.writeFile(fileName, JSON.stringify(movies), () => {
 			return;
@@ -47,9 +47,9 @@ export async function find(settings) {
 		language && language.length > 1
 			? moviesByName.filter(movie => movie.language.includes(language))
 			: moviesByName;
-	var moviesByGenre = genere
-		? moviesByLanguage.filter(movie => movie.genre.includes(genre))
+	var moviesByGenres = genere
+		? moviesByLanguage.filter(movie => movie.genres.includes(genre))
 		: moviesByLanguage;
 
-	return moviesByGenre;
+	return moviesByGenres;
 }

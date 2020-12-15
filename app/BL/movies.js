@@ -1,11 +1,16 @@
 import * as Movie from '../models/Movie';
+import * as tvmaze from '../DAL/tvmaze';
 
 export async function getMovies(req, res, next) {
 	var { name, language, genre } = req.query;
 	try {
-		const movies = await Movie.find({ name, language, genre });
+		const newMovies = await Movie.find({ name, language, genres });
+
+		const movies = await tvmaze.getMovies();
+
 		res.render('./movies', {
 			movies,
+			newMovies,
 		});
 	} catch (err) {
 		next(err);

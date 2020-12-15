@@ -12,7 +12,7 @@ block content
       input(type="text" name="language").form-control#language
     .col-3
       label(for='genres', class="form-label") Genres
-      select(name="genre").custom-select#genres.form-control
+      select(name="genres").custom-select#genres.form-control
         option(selected disabled hidden value="") Choose genre...
         option(value="Drame") Drama
         option(value="Comedy") Comedy
@@ -23,7 +23,7 @@ block content
       button(type="submit").btn.btn-secondary Submit
 
   ul
-    each movie in movies 
+    each movie in newMovies 
       li= movie.name
         
   include ./includes/footer.pug 

@@ -1,12 +1,16 @@
-import axios from 'axios'
+import axios from 'axios';
 
-export async function getMovieById(movieId){
-    return []
+var showsUrl = 'https://api.tvmaze.com/shows';
+
+export async function getMovieById(movieId) {
+	return [];
 }
 
-export async function getMovies(settings){
-
+export async function getMovies() {
+	try {
+		var response = await axios.get(showsUrl);
+		return response.data;
+	} catch (err) {
+		throw err;
+	}
 }
-
-
-
