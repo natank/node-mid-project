@@ -94,7 +94,7 @@ app.use('/', menuRoutes);
 app.get('/search', moviesController.getMovies);
 app.get('/create', moviesController.getCreateMovie);
 app.post('/create', moviesController.postCreateMovie);
-
+app.get('/movie/:id', moviesController.getMovie)
 /**User Routes */
 app.get('/users', userRouter);
 

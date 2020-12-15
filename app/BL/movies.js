@@ -2,7 +2,7 @@ import * as Movie from '../models/Movie';
 import * as tvmaze from '../DAL/tvmaze';
 
 export async function getMovies(req, res, next) {
-	var { name, language, genre } = req.query;
+	var { name, language, genres } = req.query;
 	try {
 		const newMovies = await Movie.find({ name, language, genres });
 
@@ -60,9 +60,9 @@ export async function getCreateMovie(req, res, next) {
 }
 
 export async function postCreateMovie(req, res, next) {
-	const { name, language, genre } = req.body;
+	const { name, language, genres } = req.body;
 	try {
-		await Movie.createMovie({ name, language, genre });
+		await Movie.createMovie({ name, language, genres });
 		res.render('./menu');
 	} catch (err) {
 		next(err);

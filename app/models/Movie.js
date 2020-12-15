@@ -1,5 +1,6 @@
 import fs from 'fs';
-import path from 'path';
+import * as tvmaze from '../DAL/tvmaze'
+import * as newMoviesDAL from '../DAL/newMovies'
 
 var fileName = 'NewMovies.json';
 
@@ -10,13 +11,13 @@ export async function createMovie(settings) {
 		var movies;
 		if (err) {
 			/**File not found */
-			movies = { movies: [] };
+			movies = [];
 		} else {
-			movies = JSON.parse(data);
+			var movies = JSON.parse(data);
 		}
 		var id = movies.length;
 		var movie = { name, language, genres, id };
-		movies.movies.push(movie);
+		movies.push(movie);
 		fs.writeFile(fileName, JSON.stringify(movies), () => {
 			return;
 		});
@@ -24,25 +25,25 @@ export async function createMovie(settings) {
 }
 
 export async function find(settings) {
-	var { name, language, genere } = settings;
-	var movies = new Promise((resolve, reject) => {
-		var allMovies;
-		fs.readFile(fileName, function (err, data) {
-			if (err) {
-				allMovies = {};
-			} else {
-				var json = JSON.parse(data);
-				allMovies = json.movies;
-			}
-			resolve(allMovies);
-		});
-	});
+	var newMovies = await newMoviesDAL.readMoviesFromFile();	
+	var newMoviesFiltered = filterMoviesBySettings(newMovies, settings)
 
-	var allMovies = await movies;
+	var apiMovies = tvmaze.getMovies();
+	var apiMoviesFiltered = filterMoviesBySettings(apiMovies, settings)
+	return {newMovies: newMoviesFiltered, apiMovies: apiMoviesFiltered};
+}
+
+export function findById(id){
+
+}
+
+async function filterMoviesBySettings(movies=[], settings = {name: null, language: null, genre: null}){
+	var { name, language, genere } = settings;
+	
 	var moviesByName =
 		name && name.length > 1
-			? allMovies.filter(movie => movie.name.includes(name))
-			: allMovies;
+			? movies.filter(movie => movie.name.includes(name))
+			: movies;
 	var moviesByLanguage =
 		language && language.length > 1
 			? moviesByName.filter(movie => movie.language.includes(language))
