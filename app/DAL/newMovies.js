@@ -1,8 +1,8 @@
 import fs from 'fs';
 var fileName = 'NewMovies.json';
 
-export async function readMoviesFromFile(){
-    var movies = new Promise((resolve, reject) => {
+export async function readMoviesFromFile() {
+	var movies = new Promise((resolve, reject) => {
 		fs.readFile(fileName, function (err, data) {
 			var allMovies;
 			if (err) {
@@ -13,4 +13,5 @@ export async function readMoviesFromFile(){
 			resolve(allMovies);
 		});
 	});
+	return movies;
 }

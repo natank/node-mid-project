@@ -30,7 +30,7 @@ block content
         th(scope="col") Movie
         th(scope="col") Related Movies
       tbody
-        each movie in newMovies 
+        each movie in movies.newMovies 
           tr
             td
               a(href= `/movie/${movie.id}`)= movie.name
@@ -44,10 +44,10 @@ block content
         th(scope="col") Movie
         th(scope="col") Related Movies
       tbody
-        each movie in movies 
+        each movie in movies.apiMovies 
           tr
             td
-              a(href="#")= movie.name
+              a(href= `/movies/:${movie.id}`)= movie.name
             td
               a(href="#")= movie.name
   include ./includes/footer.pug 

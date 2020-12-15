@@ -1,18 +1,5 @@
 extends ./templates/container.pug
 block content
-  h1.text-center.my-4
-    | DIY PRINTABLES FOR HOLIDAYS & PARTIES
-
-  h2.text-center.mb-4  
-    | #{product.title}
-  div.m-auto
-    - let displayMode = 'single';
-    - let itemType = 'product'; 
-    - let downloadUrl = `/download/${product._id}`;
-    - let { id, editUrl, deleteUrl, imageUrl, title, description, myProduct, price } = product;
-    - const productUrl = `/product/${product.id}`
-
-    include ../includes/productCard
-
+    
   include ../includes/footer.pug 
 

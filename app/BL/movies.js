@@ -4,13 +4,10 @@ import * as tvmaze from '../DAL/tvmaze';
 export async function getMovies(req, res, next) {
 	var { name, language, genres } = req.query;
 	try {
-		const newMovies = await Movie.find({ name, language, genres });
-
-		const movies = await tvmaze.getMovies();
+		const movies = await Movie.find({ name, language, genres });
 
 		res.render('./movies', {
 			movies,
-			newMovies,
 		});
 	} catch (err) {
 		next(err);
