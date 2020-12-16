@@ -1,0 +1,21 @@
+extends ../templates/container.pug
+block content
+  section.hero
+      p.hero__text 
+        | Create User
+  section.container.w-md-25.form-group
+    form.row.g-3(action="/users/create" method="POST")
+      .col-12
+        label(for="username", class="form-label") User Name
+        input(type="text" name="username").form-control#username
+      .col-12
+        label(for="password", class="form-label") Password
+        input(type="password" name="password").form-control#transactions
+      .col-12
+        label(for="tranactions", class="form-label") Transactions
+        input(type="text" name="transactions").form-control#transactions
+      .col-12
+        button(type="submit").btn.btn-secondary Create
+
+
+  include ../includes/footer.pug

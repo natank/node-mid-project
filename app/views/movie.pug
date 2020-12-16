@@ -1,5 +1,10 @@
 extends ./templates/container.pug
 block content
-    p Hello movie
-  include ../includes/footer.pug 
+  .card.m-auto
+    if movie.image
+      img(src=movie.image.medium alt=`${movie.name} image`).card-img-top.mb-3
+    .card-body
+      h5.card-title= `${movie.name}, ${movie.language}`
+      p.card-text= movie.genres.toString()
+  include ./includes/footer.pug 
 

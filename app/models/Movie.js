@@ -1,5 +1,5 @@
 import * as tvmaze from '../DAL/tvmaze';
-import * as newMoviesDAL from '../DAL/newMovies';
+import * as newMoviesDAL from '../DAL/movies';
 
 export async function createMovie(settings) {
 	var { name, language, genres } = settings;
@@ -26,8 +26,9 @@ export async function findById(id) {
 	var movie = newMovies.find(movie => movie.id == id);
 	if (movie) return movie;
 	else {
-		var apiMovies = await tvmaze.getMovieById(id);
-		return apiMovies;
+		var response = await tvmaze.getMovieById(id);
+		var movie = response.data
+		return movie;
 	}
 }
 

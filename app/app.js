@@ -96,7 +96,7 @@ app.get('/create', moviesController.getCreateMovie);
 app.post('/create', moviesController.postCreateMovie);
 app.get('/movies/:id', moviesController.getMovie);
 /**User Routes */
-app.get('/users', userRouter);
+app.use('/users', userRouter);
 
 /**Auth Routes */
 app.use('/auth', authRouter);

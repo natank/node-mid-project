@@ -1,12 +1,12 @@
-import express from 'express'
-import User from '../models/User'
+import * as User from '../models/User'
 
-export function getUsers(req, res, next){
-    res.render('./users/users',{})
+export async function getUsers(req, res, next){
+    var users = await User.getUsers()
+    res.render('./users',{users})
 }
 
 export function getUser(req, res, next){
-    res.render('/users/user',{})
+    res.render('/user',{})
 }
 
 export function getCreateUser(req, res, next){
@@ -14,18 +14,19 @@ export function getCreateUser(req, res, next){
 }
 
 export function getUpdateUser(req, res, next){
-    res.render('users/userForm', {})
+    res.render('users/userForm')
 }
 
 export function deleteUser(req, res, next){
     res.render('/')
 }
 
-export function postCreateUser(req, res, next){
-    res.render('/')
+export async function postCreateUser(req, res, next){
+    var {username, transactions, password} = req.body;
+    await User.createUser({username, transactions, password})
+    res.redirect('/users')
 }
 
-export function updateUser(req, res, next){
-    res.render('/')
+export async function postUpdateUser(req, res, next){
+    res.render('users/userForm')
 }
-

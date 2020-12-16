@@ -18,7 +18,7 @@ export async function getMovie(req, res, next) {
 	try {
 		const movie = await Movie.findById(req.params.id);
 
-		res.render('./movie', { movie.data });
+		res.render('./movie', { movie });
 	} catch (err) {
 		next(err);
 	}
