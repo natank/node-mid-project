@@ -2,16 +2,21 @@ import fs from 'fs';
 var fileName = 'NewMovies.json';
 
 export async function readMoviesFromFile() {
-	var movies = new Promise((resolve, reject) => {
+	return new Promise((resolve, reject) => {
 		fs.readFile(fileName, function (err, data) {
 			var allMovies;
 			if (err) {
-				allMovies = {};
+				allMovies = [];
 			} else {
 				var allMovies = JSON.parse(data);
 			}
 			resolve(allMovies);
 		});
 	});
-	return movies;
+}
+
+export async function writeMoviesToFile(movies) {
+	fs.writeFile(fileName, JSON.stringify(movies), () => {
+		return;
+	});
 }

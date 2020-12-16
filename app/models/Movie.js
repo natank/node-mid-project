@@ -1,27 +1,15 @@
-import fs from 'fs';
 import * as tvmaze from '../DAL/tvmaze';
 import * as newMoviesDAL from '../DAL/newMovies';
-
-var fileName = 'NewMovies.json';
 
 export async function createMovie(settings) {
 	var { name, language, genres } = settings;
 
-	fs.readFile(fileName, function (err, data) {
-		var movies;
-		if (err) {
-			/**File not found */
-			movies = [];
-		} else {
-			var movies = JSON.parse(data);
-		}
-		var id = movies.length;
-		var movie = { name, language, genres, id };
-		movies.push(movie);
-		fs.writeFile(fileName, JSON.stringify(movies), () => {
-			return;
-		});
-	});
+	var newMovies = await newMoviesDAL.readMoviesFromFile();
+
+	var id = `${newMovies.length}n`;
+	var movie = { name, language, genres, id };
+	newMovies.push(movie);
+	newMoviesDAL.writeMoviesToFile(newMovies);
 }
 
 export async function find(settings) {
@@ -33,7 +21,15 @@ export async function find(settings) {
 	return { newMovies: newMoviesFiltered, apiMovies: apiMoviesFiltered };
 }
 
-export function findById(id) {}
+export async function findById(id) {
+	var newMovies = await newMoviesDAL.readMoviesFromFile();
+	var movie = newMovies.find(movie => movie.id == id);
+	if (movie) return movie;
+	else {
+		var apiMovies = await tvmaze.getMovieById(id);
+		return apiMovies;
+	}
+}
 
 function filterMoviesBySettings(
 	movies = [],

@@ -47,7 +47,7 @@ block content
         each movie in movies.apiMovies 
           tr
             td
-              a(href= `/movies/:${movie.id}`)= movie.name
+              a(href= `/movies/${movie.id}`)= movie.name
             td
               a(href="#")= movie.name
   include ./includes/footer.pug 

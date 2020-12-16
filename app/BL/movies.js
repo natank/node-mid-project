@@ -18,31 +18,9 @@ export async function getMovie(req, res, next) {
 	try {
 		const movie = await Movie.findById(req.params.id);
 
-		res.render('./movie', { movie });
+		res.render('./movie', { movie.data });
 	} catch (err) {
 		next(err);
-	}
-}
-
-export async function postSearchMovies(req, res, next) {
-	const prodId = req.body.productId;
-	let user = await req.user
-		.populate({
-			path: 'cart.item.product',
-		})
-		.execPopulate();
-
-	user.cart = user.cart.filter(item => {
-		let leaveInCart = item.product.toString() !== prodId;
-		return leaveInCart;
-	});
-	try {
-		await user.save();
-		res.redirect('/cart');
-	} catch (err) {
-		const error = new Error(err);
-		error.httpStatusCode = 500;
-		return next(error);
 	}
 }
 

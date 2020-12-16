@@ -1,14 +1,15 @@
 import axios from 'axios';
 
-var showsUrl = 'https://api.tvmaze.com/shows';
+var showsAPI = axios.create({ baseURL: 'https://api.tvmaze.com/shows' });
 
 export async function getMovieById(movieId) {
-	return [];
+	var show = showsAPI.get(`/${movieId}`);
+	return show;
 }
 
 export async function getMovies() {
 	try {
-		var response = await axios.get(showsUrl);
+		var response = await showsAPI.get();
 		return response.data;
 	} catch (err) {
 		throw err;
