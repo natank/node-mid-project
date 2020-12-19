@@ -1,12 +1,12 @@
 import * as Movie from '../models/Movie';
-import * as tvmaze from '../DAL/tvmaze';
 
 export async function getMovies(req, res, next) {
-	var { name, language, genres } = req.query;
+	var { name, language, genre } = req.query;
 	try {
-		const movies = await Movie.find({ name, language, genres });
-
+		const movies = await Movie.find({ name, language, genre });
+		const allGenres = await Movie.getGenres();
 		res.render('./movies', {
+			genres: allGenres,
 			movies,
 		});
 	} catch (err) {
@@ -26,7 +26,9 @@ export async function getMovie(req, res, next) {
 
 export async function getCreateMovie(req, res, next) {
 	try {
+		var genres = await Movie.getGenres();
 		res.render('movieForm', {
+			genres,
 			renderAs: 'new',
 		});
 	} catch (err) {

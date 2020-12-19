@@ -1,29 +1,26 @@
 extends ./templates/container.pug
 block content
   section.hero
-      p.hero__text 
-        | Create Movie
+      p.hero__text.m-0 
+        | #{user ? "Update" : "Create"} User
   section.container.w-md-25.form-group
-    form.row.g-3(action="/create" method="POST")
+    form.row.g-3(action= (user ? `/users/update/${user.id}`: "/users/create") method="POST")
       .col-12
-        label(for="name", class="form-label") Name
-        input(type="text" name="name").form-control#name
+        label(for="username", class="form-label") User Name
+        input(type="text" name="username" value= (user ? `${user.username}`:'')).form-control#username
       .col-12
-        label(for="language", class="form-label") Language
-        input(type="text" name="language").form-control#language
+        label(for="password", class="form-label") Password
+        input(type="password" name="password" value=(user?user.password:'')).form-control#transactions
       .col-12
-        .input-group.mb-3
-          .input-group-prepend
-            label.input-group-text(for='genres') Genres
-          select(multiple name="genres").custom-select#genres.form-control
-            option(selected) Choose genre...
-            option Drama
-            option Comedy
-            option 3
-            option 4
-            option 5
+        label(for="tranactions", class="form-label") Transactions
+        input(type="text" name="transactions" value=(user?user.transactions:'')).form-control#transactions
       .col-12
-        button(type="submit").btn.btn-secondary Create
-
+        .form-check
+          input.form-check-input(type="checkbox" id="isAdmin" name="isAdmin")
+          label.form-check-label(for="isAdmin")
+            | Admin      
+      .col-12
+        button(type="submit").btn.btn-secondary= (user? `Update`:`Create`)
+      
 
   include ./includes/footer.pug

@@ -1,9 +1,9 @@
 extends ./templates/container.pug
 block content
   section.hero
-      p.hero__text 
+      p.hero__text.m-0 
         | Create Movie
-  section.container.w-md-25.form-group
+  section.container.w-md-50.form-group
     form.row.g-3(action="/create" method="POST")
       .col-12
         label(for="name", class="form-label") Name
@@ -16,12 +16,9 @@ block content
           .input-group-prepend
             label.input-group-text(for='genres') Genres
           select(multiple name="genres").custom-select#genres.form-control
-            option(selected) Choose genre...
-            option Drama
-            option Comedy
-            option 3
-            option 4
-            option 5
+            option(disabled selected) Choose genre...
+            each genre in genres
+              option(value= genre)= genre
       .col-12
         button(type="submit").btn.btn-secondary Create
 

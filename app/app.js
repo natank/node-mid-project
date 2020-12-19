@@ -4,14 +4,19 @@ import session from 'express-session';
 import devMiddleware from 'webpack-dev-middleware';
 import hotMiddleware from 'webpack-hot-middleware';
 import bodyParser from 'body-parser';
-import flash from 'connect-flash';
 import config from './config/webpack.dev';
+import flash from 'connect-flash';
 
 import menuRoutes from './routes/menu';
 import authRouter from './routes/auth';
 import userRouter from './routes/user';
 
 import * as moviesController from './BL/movies';
+import * as authController from './BL/auth';
+import * as User from './Models/User';
+
+import { isLoggedIn, isAdmin } from './BL/middleware/auth';
+import hasTransactions from './BL/middleware/hasTransactions';
 
 const isProd = process.env.NODE_ENV === 'production';
 let webpackDevMiddleware;
@@ -55,6 +60,24 @@ const dataMW = (function (app) {
  *
  */
 
+const sessionMW = (function (app) {
+	app.use(
+		session({
+			secret: 'keyboard cat',
+			resave: false,
+			saveUninitialized: true,
+		})
+	);
+})(app);
+
+/**
+ * flash Middleware
+ *
+ */
+const flasHMW = (app => {
+	app.use(flash());
+})(app);
+
 /**
  * Webpack middleware
  */
@@ -79,24 +102,47 @@ const generalMW = (function (app) {
 	app.use(express.static(path.join(__dirname, '../fonts')));
 })(app);
 
-/**
- * flash Middleware
- *
- */
-const flasHMW = (app => {
-	app.use(flash());
+const userMW = (function (app) {
+	app.use(async (req, res, next) => {
+		if (req.session.user) {
+			try {
+				let user = await User.findById(req.session.user.id);
+				if (user) {
+					req.user = user;
+					res.locals.isLoggedIn = !!req.user;
+					res.locals.isAdmin = req.user.admin;
+					res.locals.user = user.email;
+				}
+			} catch (err) {
+				throw new Error(err);
+			}
+		}
+		next();
+	});
 })(app);
 
 /**Menu Routes */
 app.use('/', menuRoutes);
 
 /**Movies Routes */
-app.get('/search', moviesController.getMovies);
-app.get('/create', moviesController.getCreateMovie);
-app.post('/create', moviesController.postCreateMovie);
-app.get('/movies/:id', moviesController.getMovie);
+app.get('/search', isLoggedIn, hasTransactions, moviesController.getMovies);
+app.get(
+	'/create',
+	isLoggedIn,
+	hasTransactions,
+	moviesController.getCreateMovie
+);
+app.post(
+	'/create',
+	isLoggedIn,
+	hasTransactions,
+	moviesController.postCreateMovie
+);
+app.get('/movies/:id', isLoggedIn, hasTransactions, moviesController.getMovie);
+app.get('/login', authController.getLogin);
+app.get('/logout', authController.getLogout);
 /**User Routes */
-app.use('/users', userRouter);
+app.use('/users', isAdmin, hasTransactions, userRouter);
 
 /**Auth Routes */
 app.use('/auth', authRouter);

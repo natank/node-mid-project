@@ -1,15 +1,10 @@
-const crypto = require('crypto');
-const { validationResult } = require('express-validator/check');
-
-let User = require('../models/User');
-const bcrypt = require('bcryptjs');
-const transporter = require('../util/mailer').transporter;
+import { check, body } from 'express-validator/check';
+import { validationResult } from 'express-validator/check';
+import * as User from '../models/User';
 
 exports.getLogin = async (req, res, next) => {
-	res.render('auth/login', {
-		path: '/login',
-		pageTitle: 'Login',
-		errorMessage: '',
+	res.render('login', {
+		errorMessage: req.flash('error'),
 		oldInput: {
 			email: '',
 			password: '',
@@ -20,52 +15,36 @@ exports.getLogin = async (req, res, next) => {
 
 exports.postLogin = async (req, res, next) => {
 	const errors = validationResult(req);
-	const { email, password } = req.body;
+	const { username, password } = req.body;
 
-	if (errors.isEmpty()) {
-		signInUser();
-	} else {
-		cancelSignIn();
+	if (errors.isEmpty()) await signInUser();
+	else cancelSignIn();
+
+	async function signInUser() {
+		req.session.user = req.user;
+		var today = new Date(Date.now()).toDateString();
+		var user = { ...req.session.user };
+
+		if (req.session.user.loggedInAt != today) {
+			user.loggedInAt = today;
+			user.transactionsCounter = 0;
+			await User.updateUser(user);
+		}
+		if (user.transactionsCounter >= user.transactions) {
+			req.flash('error', `Your have exceeded your daily transactions`);
+		}
+		res.redirect('/');
 	}
 
 	function cancelSignIn() {
-		res.status(422).render('auth/login', {
-			path: '/signin',
-			pageTitle: 'Signin',
+		res.status(422).render('login', {
 			errorMessage: errors.array()[0].msg,
 			oldInput: {
-				email,
+				username,
 				password,
 			},
 			validationErrors: errors.array(),
 		});
-	}
-
-	async function signInUser() {
-		if (errors.isEmpty()) {
-			try {
-				let user = req.user;
-				req.session.isLoggedIn = true;
-				req.session.isAdmin = req.user.admin;
-				req.session.user = user;
-				await req.session.save();
-				res.redirect('/');
-			} catch (err) {
-				const error = new Error(err);
-				error.httpStatusCode = 500;
-				return next(error);
-			}
-		} else {
-			res.status(422).render('auth/login', {
-				path: '/login',
-				pageTitle: 'Login',
-				errorMessage: errors.array()[0].msg,
-				oldInput: {
-					email,
-				},
-				validationErrors: errors.array(),
-			});
-		}
 	}
 };
 
@@ -80,167 +59,59 @@ exports.getLogout = async (req, res, next) => {
 	}
 };
 
-exports.getSignup = (req, res, next) => {
-	res.render('auth/signup', {
-		path: '/signup',
-		pageTitle: 'Signup',
-		errorMessage: req.flash('error'),
-		oldInput: {
-			email: '',
-			password: '',
-			confirmPassword: '',
-		},
-		validationErrors: [],
-	});
-};
+export async function postCreateUser(req, res, next) {
+	var { username, transactions, password } = req.body;
+	await User.createUser({ username, transactions, password });
+	res.redirect('/users');
+}
 
-exports.postSignup = async (req, res, next) => {
-	const errors = validationResult(req);
-	const { email, password, confirmPassword } = req.body;
+export async function postUpdateUser(req, res, next) {
+	var users = await User.getUsers();
+	var { id } = req.params;
+	var { username, password, transactions } = req.body;
 
-	if (errors.isEmpty()) {
-		signupUser();
-	} else {
-		cancelSignup();
-	}
+	var user = users.find(user => user.id == id);
 
-	function cancelSignup() {
-		res.status(422).render('auth/signup', {
-			path: '/signup',
-			pageTitle: 'Signup',
-			errorMessage: errors.array()[0].msg,
-			oldInput: {
-				email,
-				password,
-				confirmPassword,
-			},
-			validationErrors: errors.array(),
-		});
-	}
+	user = { ...user, username, password, transactions };
 
-	async function signupUser() {
-		try {
-			let hashedPassword = await bcrypt.hash(password, 12);
+	await User.updateUser(user);
 
-			const user = new User({
-				email: email,
-				password: hashedPassword,
-			});
-			let result = await user.save();
-			res.redirect('login');
-			await transporter.sendMail({
-				to: email,
-				from: 'shop@nodecomplete.com',
-				subject: 'Signup succeeded',
-				html: '<h1>Thank you for signing up!</h1>',
-			});
-		} catch (err) {
-			const error = new Error(err);
-			error.httpStatusCode = 500;
-			return next(error);
-		}
-	}
-};
+	res.redirect('/users');
+}
 
-exports.getReset = (req, res, next) => {
-	res.render('auth/reset', {
-		path: '/reset',
-		pageTitle: 'Reset Password',
-		errorMessage: req.flash('error'),
-	});
-};
+/**Middleware */
+export function isAuth(req, res, next) {
+	return next();
+}
 
-exports.postReset = async (req, res, next) => {
-	try {
-		const buffer = await new Promise((resolve, reject) => {
-			crypto.randomBytes(32, (err, buffer) => {
-				if (err) {
-					reject('error generating token');
-				}
-				resolve(buffer);
-			});
-		});
-		const token = buffer.toString('hex');
+export var validateUsername = body('username') //validate username
+	.custom(async (value, { req }) => {
+		let { username } = req.body;
 		let user = await User.findOne({
-			email: req.body.email,
+			username,
 		});
 		if (!user) {
-			req.flash('error', 'No account with that email found');
-			res.redirect('/reset');
+			throw new Error('Incorrect username');
 		} else {
-			user.resetToken = token;
-			user.resetTokenExpiration = Date.now() + 3600000;
-			await user.save();
-			res.redirect('/');
-			await transporter.sendMail({
-				to: req.body.email,
-				from: 'shop@nodecomplete.com',
-				subject: 'Reset Password',
-				html: `
-          <p>You requested a password reset</p>
-          <p>Click this link<a href="http://localhost:3000/reset/${token}">link</a> to set a new password.</p>
-        `,
-			});
-			console.log(token);
+			req.user = user;
+			return true;
 		}
-	} catch (err) {
-		const error = new Error(err);
-		error.httpStatusCode = 500;
-		return next(error);
-		req.flash(
-			'error',
-			"Sorry, we can't reset your password at the moment, please try again later"
-		);
-		res.redirect('/reset');
-	}
-};
+	})
+	.withMessage('Username does not exist!!');
 
-exports.getNewPassword = async (req, res, next) => {
-	const token = req.params.token;
-	try {
-		let user = await User.findOne({
-			resetToken: token,
-			resetTokenExpiration: {
-				$gt: Date.now(),
-			},
-		});
-		if (user) {
-			res.render('auth/new-password', {
-				path: '/new-password',
-				pageTitle: 'New Password',
-				errorMessage: req.flash('error'),
-				userId: user._id.toString(),
-				passwordToken: token,
-			});
-		} else {
-			req.flash('error', `Can't reset your password at the moment`);
-			res.redirect('/signup');
+export var validatePassword = body('password', 'password error') // validate password
+	.isLength({
+		min: 5,
+	})
+	.withMessage('password must be 5 chars or more')
+	.isAlphanumeric()
+	.withMessage('password must contain only letters and numbers')
+	.trim()
+	.custom(async (value, { req }) => {
+		let { password } = req.body;
+		if (req.user) {
+			let doMatch = password == req.user.password;
+			if (doMatch) return true;
+			else throw new Error('Incorrect password');
 		}
-	} catch (err) {
-		const error = new Error(err);
-		error.httpStatusCode = 500;
-		return next(error);
-	}
-};
-
-exports.postNewPassword = async (req, res, next) => {
-	const { newPassword, userId, passwordToken } = req.body;
-	try {
-		let user = await User.findOne({
-			resetToken: passwordToken,
-			resetTokenExpiration: {
-				$gt: Date.now(),
-			},
-		});
-		let hashedPassword = await bcrypt.hash(newPassword, 12);
-		user.password = hashedPassword;
-		user.resetToken = undefined;
-		user.resetTokenExpiration = undefined;
-		await user.save();
-		res.redirect('/login');
-	} catch (err) {
-		const error = new Error(err);
-		error.httpStatusCode = 500;
-		return next(error);
-	}
-};
+	});

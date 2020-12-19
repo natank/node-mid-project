@@ -1,17 +1,19 @@
 extends ./templates/container.pug
 block content
   .container
+    if(errorMessage && errorMessage.length > 0)
+      div.alert.alert-danger.mt-3.text-center #{errorMessage}
     section.hero
-      p.hero__text 
+      p.hero__text.m-0
         | Menu page
     section.container.actions
-      div.row
-        div.col.col-sm
-          a(href="/create").btn.btn-secondary.actions__item Create Movies
-        div.col.col-sm
-          a(href="/search").btn.btn-secondary.actions__item Search Movies
-        div.col.col-sm
-          a(href="/users").btn.btn-secondary.actions__item Manage Users
+      div.row.menu
+        div.col.col-sm-12.col-md-4.d-flex.justify-content-center.mb-4
+          a(href="/create").btn.btn-secondary.p-5.text-decoration-none Create Movies
+        div.col.col-sm-12.col-md-4.d-flex.justify-content-center.mb-4
+          a(href="/search").btn.btn-secondary.p-5.text-decoration-none Search Movies
+        div.col.col-sm-12.col-md-4.d-flex.justify-content-center.mb-4
+          a(href="/users").btn.btn-secondary.p-5.text-decoration-none Manage Users
 
   include ./includes/footer.pug 
 

@@ -1,9 +1,0 @@
-.category {
-  &__topics {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-    grid-gap: 3rem;
-    justify-items: center;
-  }
-}
-

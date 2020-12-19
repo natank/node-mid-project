@@ -1,79 +1,80 @@
-.hero{
-  background-color: $success;
-  height: 40vh;
-  display: flex;
-  flex-direction: row;
-  justify-content: space-around;
-  align-items: center;
-  padding: 0;
-  
-  &__text {
-    width: 40%;
-    font-size: 1.1rem;
-    @include media-breakpoint-up(lg) {
-      font-size: 2.5rem;
-    }
-    @include media-breakpoint-up(md) {
-      font-size: 1.8rem;
-    }
-    color: $light;
-    text-align: center;
-  }
-  &__image-box {
-    position: relative;
-    
-    height: 60%;
-    padding-left: 30%;
+.hero {
+	background-color: $success;
+	height: 10vh;
+	@include media-breakpoint-up(sm) {
+		height: 40vh;
+	}
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	padding: 0;
 
-    @include media-breakpoint-up(md) {
-      height: 90%;
-      padding-left: 22%;
-    }
-    @include media-breakpoint-up(lg) {
-      height: 90%;
-      padding-left: 15%;
-    }
- 
-    
-    &__image {
-      position: absolute;
-      display: flex;
-      flex-direction: center;
-      justify-content: center;
-      z-index: 1000;
-      width: 80%;
-      height: 80%;
-      left: -10%;
-      top: 10%;
-      background-image:  url('../../images/maze.jpg'), linear-gradient(#fff, #fff);
-      background-repeat: no-repeat;
-      background-position: center;
-      background-size: contain;
+	&__text {
+		font-size: 1.1rem;
+		@include media-breakpoint-up(lg) {
+			font-size: 2.5rem;
+		}
+		@include media-breakpoint-up(md) {
+			font-size: 1.8rem;
+		}
+		color: $light;
+		text-align: center;
+	}
+	&__image-box {
+		position: relative;
 
-      &.rotated{
-        transform: rotate(-10deg);
-      }
-      &.translated {
-        transform: translateY(-50%)
-      }
-      &.shadowed {
-        box-shadow: 10px 10px 5px 0px rgba(0,0,0,0.75);
-      }
-    }
-  }
-  
-  position: relative;
-  // background: url('../images/eduactivity.jpg');
-  background-size: 100%;
-  background-position: 100% 30%;
-  background-repeat: no-repeat;
-  height: 230px;
-  
-  h1{
-    width: 100%;
-    position: absolute;
-    top: 10%;
-    left: 50%;
-    transform: translate(-50%,-50%)
-  }
+		height: 60%;
+		padding-left: 30%;
+
+		@include media-breakpoint-up(md) {
+			height: 90%;
+			padding-left: 22%;
+		}
+		@include media-breakpoint-up(lg) {
+			height: 90%;
+			padding-left: 15%;
+		}
+
+		&__image {
+			position: absolute;
+			display: flex;
+			flex-direction: center;
+			justify-content: center;
+			z-index: 1000;
+			width: 80%;
+			height: 80%;
+			left: -10%;
+			top: 10%;
+			background-image: url('../../images/maze.jpg'),
+				linear-gradient(#fff, #fff);
+			background-repeat: no-repeat;
+			background-position: center;
+			background-size: contain;
+
+			&.rotated {
+				transform: rotate(-10deg);
+			}
+			&.translated {
+				transform: translateY(-50%);
+			}
+			&.shadowed {
+				box-shadow: 10px 10px 5px 0px rgba(0, 0, 0, 0.75);
+			}
+		}
+	}
+
+	position: relative;
+	// background: url('../images/eduactivity.jpg');
+	background-size: 100%;
+	background-position: 100% 30%;
+	background-repeat: no-repeat;
+
+	h1 {
+		width: 100%;
+		position: absolute;
+		top: 10%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+	}
 }

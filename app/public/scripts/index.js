@@ -1,4 +1,5 @@
 import axios from 'axios';
+import 'bootstrap';
 
 document.addEventListener('DOMContentLoaded', event => {
 	let select = document.querySelector('.submit-on-toggle');

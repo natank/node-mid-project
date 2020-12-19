@@ -1,38 +1,18 @@
 nav.navbar.navbar--primary.navbar-expand-lg.navbar-light
-  a.navbar-brand(href='/') 
+  a.navbar-brand.text-decoration-none(href='/') 
     h2.navbar-brand__main Movies
-  button.navbar-toggler(type='button' data-toggle='collapse' data-target='#navbarSupportedContent' aria-controls='navbarSupportedContent' aria-expanded='false' aria-label='Toggle navigation')
+  button.navbar-toggler(type='button' data-toggle='collapse' 
+    data-target='#navbarSupportedContent' aria-controls='navbarSupportedContent' aria-expanded='false' aria-label='Toggle navigation')
     span.navbar-toggler-icon
-  .collapse.navbar-collapse#navbarSupportedContent
-    ul.navbar-nav.mr-auto
-      - let isActive = 'not-active'
-      li
-        a.nav-link(href='/')
-          span.glyphicon.glyphicon-home
-          span.sr-only (current)
-      if(isAdmin)
-        - isActive = section==='admin' ? 'active' : 'not-active'
-      li
-        a.nav-link(class=isActive, href='/admin/') Admin
-
-    ul.navbar-nav.navbar-right
-      if !isLoggedIn
-        li.mx-lg-2.nav-item
-          a(href='/auth/signup').nav-link.text-secondary
-            span.glyphicon.glyphicon-user
-            |  Sign Up
-        li.nav-item
-          a(href='/auth/login').nav-link.text-secondary
+  .collapse.navbar-collapse#navbarSupportedContent.justify-content-end
+    ul.navbar-nav
+      li.nav-item
+        if !isLoggedIn
+          a(href='/login').nav-link.text-secondary.text-decoration-none
             span.glyphicon.glyphicon-log-in
             |  Login
+        else
 
-      else
-        li.nav-item.dropdown.greeting
-          a(href='#' role='button' data-toggle="dropdown" aria-haspopup="true" aria-expanded="false").nav-link#navbarDropdown.text-secondary
-            | Hello #{user}
-          div.dropdown-menu(aria-labelledby="navbarDropdown")
-            a.dropdown-item(href='/auth/logout')
-              span.glyphicon.glyphicon-log-out
-              span.mx-1 Logout
-
+          a(href='/logout' role='button' data-toggle="dropdown" aria-haspopup="true" aria-expanded="false").nav-link#navbarDropdown.text-secondary.text-decoration-none
+            | logout
 

@@ -1,55 +1,62 @@
 extends ./templates/container.pug
 block content
-  h1.text-center.my-4
-    | Movies
+  section.hero
+    p.hero__text.m-0 
+      | View and Filter Movies
 
   form(action="/search").mb-5.border.p-5
     .row.gx-3.justify-content-center.mb-4
-      .col-4
+      .col-sm-12.col-md-4
         label(for="name", class="form-label") Name
         input(type="text" name="name").form-control#name
-      .col-4
+      .col-sm-12.col-md-4
         label(for="language", class="form-label") Language
         input(type="text" name="language").form-control#language
-      .col-4
+      .col-sm-12.col-md-4
         label(for='genres', class="form-label") Genres
-        select(name="genres").custom-select#genres.form-control
+        select(name="genre").custom-select#genres.form-control
           option(selected disabled hidden value="") Choose genre...
-          option(value="Drame") Drama
-          option(value="Comedy") Comedy
-          option(value="3") 3
-          option(value="4") 4
-          option(value="5") 5
+          each genre in genres
+            option(value=genre)= genre
     .row.justify-content-center
       .col-3.d-flex.justify-content-center
         button(type="submit").btn.btn-secondary.m-auto Submit
   h2.text-center.my-4 New Movies
-  table.table.table-striped
-    thead
-      tr
-        th(scope="col") Movie
-        th(scope="col") Related Movies
-      tbody
-        each movie in movies.newMovies 
-          tr
-            td
-              a(href= `/movies/${movie.id}`)= movie.name
-            td
-              a(href="#")= movie.name
+
+  if movies.newMovies.length < 1
+    p No new movies, try another filter 
+  else
+    table.table.table-striped(style="table-layout: fixed; width: 100%")
+      thead
+        tr
+          th(scope="col" style="width: 30%") Movie
+          th(scope="col" style="width: 70%") Related Movies
+        tbody
+          each movie in movies.newMovies 
+            tr
+              td
+                a(href= `/movies/${movie.id}`)= movie.name
+              td
+                each relatedMovie in movie.relatedMovies
+                  a(href=`/movies/${relatedMovie.id}`)= `${relatedMovie.name},   `
 
   h2.text-center.my-4 Movies
-  table.table.table-striped
-    thead
-      tr
-        th(scope="col") Movie
-        th(scope="col") Related Movies
-      tbody
-        each movie in movies.apiMovies 
-          tr
-            td
-              a(href= `/movies/${movie.id}`)= movie.name
-            td
-              a(href="#")= movie.name
+  if movies.apiMovies.length < 1
+    p No movies, try another filter 
+  else
+    table.table.table-striped(style="table-layout: fixed; width: 100%")
+      thead
+        tr
+          th(scope="col" style="width: 30%") Movie
+          th(scope="col" style="width: 70%") Related Movies
+        tbody
+          each movie in movies.apiMovies 
+            tr
+              td
+                a(href= `/movies/${movie.id}`)= movie.name
+              td
+                each relatedMovie in movie.relatedMovies
+                  a(href=`/movies/${relatedMovie.id}`)= `${relatedMovie.name},   `
   include ./includes/footer.pug 
 
 
