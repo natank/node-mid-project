@@ -1,9 +1,10 @@
 import * as User from '../models/User';
-import { check, body } from 'express-validator/check';
+import bcrypt from 'bcryptjs'
 
 export async function getUsers(req, res, next) {
 	var users = await User.getUsers();
-	res.render('./users', { users });
+	if(!users) users=[];
+	res.render('./users', { users, authUser:req.user.id });
 }
 
 export function getUser(req, res, next) {
@@ -22,14 +23,18 @@ export async function getUpdateUser(req, res, next) {
 
 export async function deleteUser(req, res, next) {
 	var { id } = req.params;
-	await User.deleteUser(id);
+	//Prevent deleting the current user
+	if(req.user && req.user.id != id) {
+		await User.deleteUser(id);
+	} 
 
 	res.redirect('/users');
 }
 
 export async function postCreateUser(req, res, next) {
 	var { username, transactions, password, isAdmin } = req.body;
-	await User.createUser({ username, transactions, password, isAdmin });
+	let hashedPassword = await bcrypt.hash(password, 12)
+	await User.createUser({ username, transactions, password: hashedPassword, isAdmin });
 	res.redirect('/users');
 }
 

@@ -18,5 +18,5 @@ block content
                             .col-3
                                 a(href=`/users/edit/${user.id}`).btn.btn-primary Edit
                             .col-3
-                                a(href=`/users/delete/${user.id}`).btn.btn-primary Delete
+                                a(href=`/users/delete/${user.id}` class= (authUser == user.id ? "disabled": "fffff")).btn.btn-primary Delete
     

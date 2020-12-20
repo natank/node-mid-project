@@ -1,6 +1,7 @@
 import { check, body } from 'express-validator/check';
 import { validationResult } from 'express-validator/check';
 import * as User from '../models/User';
+import bcrypt from 'bcryptjs'
 
 exports.getLogin = async (req, res, next) => {
 	res.render('login', {
@@ -61,7 +62,8 @@ exports.getLogout = async (req, res, next) => {
 
 export async function postCreateUser(req, res, next) {
 	var { username, transactions, password } = req.body;
-	await User.createUser({ username, transactions, password });
+	let hashedPassword = await bcrypt.hash(password, 12)
+	await User.createUser({ username, transactions, password: hashedPassword });
 	res.redirect('/users');
 }
 
@@ -110,7 +112,7 @@ export var validatePassword = body('password', 'password error') // validate pas
 	.custom(async (value, { req }) => {
 		let { password } = req.body;
 		if (req.user) {
-			let doMatch = password == req.user.password;
+			let doMatch = await bcrypt.compare(password, req.user.password);
 			if (doMatch) return true;
 			else throw new Error('Incorrect password');
 		}

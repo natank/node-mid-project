@@ -7,38 +7,29 @@ export async function getUsers() {
 	return allUsers;
 }
 
-export async function writeUsers(users) {
-	fs.writeFile(fileName, JSON.stringify(users), () => {
+export async function writeUsers(usersData) {
+	await fs.writeFile(fileName, JSON.stringify(usersData), () => {
 		return;
 	});
 }
 
-export async function deleteUser(id) {
-	var allUsers = await readUsersFromFile(fileName);
-	allUsers = allUsers.filter(user => user.id != id);
-	await writeUsersToFile(allUsers);
-}
-
-async function readUsersFromFile() {
+function readUsersFromFile() {
 	var p = new Promise((resolve, reject) => {
 		fs.readFile(fileName, (err, data) => {
 			if (err) {
-				resolve([]);
+				console.log(`the error: ${err}`)
+				resolve(undefined);
 			} else {
-				var users = JSON.parse(data);
-				resolve(users);
+				try{
+				var usersData = JSON.parse(data);
+					resolve(usersData);
+				} catch(err){
+					console.log(err)
+				}
 			}
 		});
 	});
 	return p;
 }
 
-async function writeUsersToFile(users) {
-	var p = new Promise((resolve, reject) =>
-		fs.writeFile(fileName, JSON.stringify(users), err => {
-			if (err) reject(err);
-			resolve();
-		})
-	);
-	return p;
-}
+

@@ -38,8 +38,10 @@ export async function getCreateMovie(req, res, next) {
 
 export async function postCreateMovie(req, res, next) {
 	const { name, language, genres } = req.body;
+	var isMultiSelect = Array.isArray(genres);
+	var sanitizedGenres = isMultiSelect ? genres : [genres]
 	try {
-		await Movie.createMovie({ name, language, genres });
+		await Movie.createMovie({ name, language, genres: sanitizedGenres });
 		res.render('./menu');
 	} catch (err) {
 		next(err);
