@@ -4,6 +4,10 @@
 
 Movies management app
 
+Click this link to view the deployment app on Heroku:
+https://immense-bastion-81014.herokuapp.com/
+
+
 ## How to use this site
 
 ## Roles
