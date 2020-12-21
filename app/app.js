@@ -1,8 +1,6 @@
 import express from 'express';
 import path from 'path';
 import session from 'express-session';
-import devMiddleware from 'webpack-dev-middleware';
-import hotMiddleware from 'webpack-hot-middleware';
 import bodyParser from 'body-parser';
 import flash from 'connect-flash';
 
@@ -20,19 +18,19 @@ import hasTransactions from './BL/middleware/hasTransactions';
 const isProd = process.env.NODE_ENV === 'production';
 let webpackDevMiddleware;
 let webpackHotMiddleware;
-
+console.log(`node env = ${process.env.NODE_ENV}`);
 if (!isProd) {
 	const webpack = require('webpack');
 	const config = require('./config/webpack.dev');
 	const compiler = webpack(config);
-	webpackDevMiddleware = devMiddleware(compiler, {
+	webpackDevMiddleware = require('webpack-dev-middleware')(compiler, {
 		writeToDisk: filePath => {
 			// instruct the dev server to the home.html file to disk
 			// so that the route handler will be able to read it
 			return /.+\.css$/.test(filePath);
 		},
 	});
-	webpackHotMiddleware = hotMiddleware(compiler);
+	webpackHotMiddleware = require('webpack-hot-middleware')(compiler);
 }
 
 /**
