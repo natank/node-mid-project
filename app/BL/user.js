@@ -1,10 +1,10 @@
 import * as User from '../models/User';
-import bcrypt from 'bcryptjs'
+import bcrypt from 'bcryptjs';
 
 export async function getUsers(req, res, next) {
 	var users = await User.getUsers();
-	if(!users) users=[];
-	res.render('./users', { users, authUser:req.user.id });
+	if (!users) users = [];
+	res.render('./users', { users, authUser: req.user.id });
 }
 
 export function getUser(req, res, next) {
@@ -24,30 +24,38 @@ export async function getUpdateUser(req, res, next) {
 export async function deleteUser(req, res, next) {
 	var { id } = req.params;
 	//Prevent deleting the current user
-	if(req.user && req.user.id != id) {
+	if (req.user && req.user.id != id) {
 		await User.deleteUser(id);
-	} 
+	}
 
 	res.redirect('/users');
 }
 
 export async function postCreateUser(req, res, next) {
 	var { username, transactions, password, isAdmin } = req.body;
-	let hashedPassword = await bcrypt.hash(password, 12)
-	await User.createUser({ username, transactions, password: hashedPassword, isAdmin });
+	let hashedPassword = await bcrypt.hash(password, 12);
+	await User.createUser({
+		username,
+		transactions,
+		password: hashedPassword,
+		isAdmin,
+	});
 	res.redirect('/users');
 }
 
 export async function postUpdateUser(req, res, next) {
 	var users = await User.getUsers();
 	var { id } = req.params;
-	var { username, password, transactions } = req.body;
+	var { username, password, transactions, isAdmin } = req.body;
 
 	var user = users.find(user => user.id == id);
 
-	user = { ...user, username, password, transactions };
-
-	await User.updateUser(user);
+	user = { ...user, username, transactions, isAdmin };
+	try {
+		await User.updateUser(user);
+	} catch (err) {
+		console.log(err);
+	}
 
 	res.redirect('/users');
 }

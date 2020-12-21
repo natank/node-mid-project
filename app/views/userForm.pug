@@ -4,19 +4,21 @@ block content
       p.hero__text.m-0 
         | #{user ? "Update" : "Create"} User
   section.container.w-md-25.form-group
-    form.row.g-3(action= (user ? `/users/update/${user.id}`: "/users/create") method="POST")
+    form.row.g-3(action= (user ? `/users/edit/${user.id}`: "/users/create") method="POST")
       .col-12
         label(for="username", class="form-label") User Name
         input(type="text" name="username" value= (user ? `${user.username}`:'')).form-control#username
-      .col-12
-        label(for="password", class="form-label") Password
-        input(type="password" name="password" value=('')).form-control#transactions
+      if(!user)
+        .col-12
+          label(for="password", class="form-label") Password
+          input(type="password" name="password" value=(user?user.password:'')).form-control#transactions
+          
       .col-12
         label(for="tranactions", class="form-label") Transactions
         input(type="text" name="transactions" value=(user?user.transactions:'')).form-control#transactions
       .col-12
         .form-check
-          input.form-check-input(type="checkbox" id="isAdmin" name="isAdmin")
+          input.form-check-input(type="checkbox" id="isAdmin" name="isAdmin" checked=((user && user.isAdmin)=='on'?'checked':undefined))
           label.form-check-label(for="isAdmin")
             | Admin      
       .col-12

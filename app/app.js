@@ -160,7 +160,7 @@ app.use(function errorHandler(err, req, res, next) {
 });
 
 const connect = (async function (app) {
-	const PORT = 8080;
+	const PORT = process.env.PORT || 8080;
 	app.listen(PORT, () => {
 		console.log(`app is listening on port http://localhost:${PORT}`);
 	});

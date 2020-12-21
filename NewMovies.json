@@ -1,1 +1,15 @@
-[{"name":"Apollo 11","language":"English","genres":["Adventure"],"id":"0n"},{"name":"Wonder Woman","language":"German","genres":["Action","Adventure"],"id":"1n"},{"name":"Darling","language":"German","genres":["Music"],"id":"2n"}]
+[
+	{
+		"name": "Apollo 11",
+		"language": "English",
+		"genres": ["Adventure"],
+		"id": "0n"
+	},
+	{
+		"name": "Wonder Woman",
+		"language": "German",
+		"genres": ["Action", "Adventure"],
+		"id": "1n"
+	},
+	{ "name": "Darling", "language": "German", "genres": ["Music"], "id": "2n" }
+]

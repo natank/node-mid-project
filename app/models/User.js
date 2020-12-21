@@ -2,10 +2,10 @@ import * as usersDal from '../DAL/users';
 
 export async function createUser(settings) {
 	var usersData = await usersDal.getUsers();
-	if(!usersData) usersData = {nextId: 0, users:[]}
-	var {users, nextId} = usersData
+	if (!usersData) usersData = { nextId: 0, users: [] };
+	var { users, nextId } = usersData;
 	var id = nextId;
-	usersData.nextId = id+1;
+	usersData.nextId = id + 1;
 	var createdDate = new Date(Date.now()).toDateString();
 	var user = { ...settings, id, createdDate };
 	users.push(user);
@@ -15,7 +15,7 @@ export async function createUser(settings) {
 export async function getUsers() {
 	var data = await usersDal.getUsers();
 
-	return !data || data.users;
+	return data ? data.users : null;
 }
 
 export async function findOne({ username }) {
@@ -32,18 +32,18 @@ export async function findById(id) {
 
 export async function updateUser(user) {
 	var usersData = await usersDal.getUsers();
-	var {users, index} = usersData
-	users = users.filter(currUser => {
-		var result = currUser.id != user.id;
-		return result;
+	var { users, index } = usersData;
+	var oldUser = users.find(currUser => currUser.id == user.id);
+	Object.keys(user).forEach(key => {
+		oldUser[key] = user[key];
 	});
-	users.push(user);
+
 	await usersDal.writeUsers(usersData);
 }
 
 export async function deleteUser(id) {
 	var usersData = await usersDal.getUsers();
-	var {users, index} = usersData
+	var { users, index } = usersData;
 	users = users.filter(currUser => {
 		var result = currUser.id != id;
 		return result;

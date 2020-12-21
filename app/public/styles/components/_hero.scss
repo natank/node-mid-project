@@ -35,33 +35,6 @@
 			height: 90%;
 			padding-left: 15%;
 		}
-
-		&__image {
-			position: absolute;
-			display: flex;
-			flex-direction: center;
-			justify-content: center;
-			z-index: 1000;
-			width: 80%;
-			height: 80%;
-			left: -10%;
-			top: 10%;
-			background-image: url('../../images/maze.jpg'),
-				linear-gradient(#fff, #fff);
-			background-repeat: no-repeat;
-			background-position: center;
-			background-size: contain;
-
-			&.rotated {
-				transform: rotate(-10deg);
-			}
-			&.translated {
-				transform: translateY(-50%);
-			}
-			&.shadowed {
-				box-shadow: 10px 10px 5px 0px rgba(0, 0, 0, 0.75);
-			}
-		}
 	}
 
 	position: relative;
