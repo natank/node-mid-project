@@ -4,7 +4,6 @@ import session from 'express-session';
 import devMiddleware from 'webpack-dev-middleware';
 import hotMiddleware from 'webpack-hot-middleware';
 import bodyParser from 'body-parser';
-import config from './config/webpack.dev';
 import flash from 'connect-flash';
 
 import menuRoutes from './routes/menu';
@@ -22,8 +21,9 @@ const isProd = process.env.NODE_ENV === 'production';
 let webpackDevMiddleware;
 let webpackHotMiddleware;
 
-const webpack = require('webpack');
 if (!isProd) {
+	const webpack = require('webpack');
+	const config = require('./config/webpack.dev');
 	const compiler = webpack(config);
 	webpackDevMiddleware = devMiddleware(compiler, {
 		writeToDisk: filePath => {
