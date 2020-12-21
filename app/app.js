@@ -12,7 +12,7 @@ import userRouter from './routes/user';
 
 import * as moviesController from './BL/movies';
 import * as authController from './BL/auth';
-import * as User from './Models/User';
+import * as User from './models/User';
 
 import { isLoggedIn, isAdmin } from './BL/middleware/auth';
 import hasTransactions from './BL/middleware/hasTransactions';
