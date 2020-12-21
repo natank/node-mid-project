@@ -4,9 +4,12 @@
 
 Movies management app
 
+## Deployment
 Click this link to view the deployment app on Heroku:
 https://immense-bastion-81014.herokuapp.com/
-
+To sign in, use the following login credentials:
+user name: admin
+password: admin
 
 ## How to use this site
 
